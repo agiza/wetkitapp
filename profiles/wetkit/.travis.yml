@@ -1,0 +1,28 @@
+# Declare testing language
+language: php
+
+# Language versioning
+php:
+  - 5.4
+
+# Envars for contextual operations
+env:
+  - DB=mysql
+  - DB=postgres
+
+# Specifications of database(s)
+mysql:
+  adapter: mysql2
+  database: drupal_db
+  username: root
+  encoding: utf8
+postgres:
+  adapter: postgresql
+  database: myapp_test
+  username: postgres
+
+# Travis scripts
+before_script:
+  - ./scripts/travis_before_script.sh
+script:
+  - ./scripts/travis_script.sh
