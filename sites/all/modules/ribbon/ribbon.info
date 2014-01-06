@@ -1,0 +1,7 @@
+name = Ribbon
+description = Fixed Top Ribbon for our Projects.
+core = 7.x
+dependencies[] = jquery_colorpicker
+files[] = ribbon.module
+version = "7.x-2.1"
+configure = admin/structure/ribbon

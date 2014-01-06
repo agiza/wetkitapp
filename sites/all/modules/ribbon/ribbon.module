@@ -1,0 +1,155 @@
+<?php
+/**
+ * @file
+ * Module File.
+ *
+ */
+
+/**
+* Implement hook_help().
+*/
+// function ribbon_help($path, $arg) {
+// 	if ($path == 'admin/help#ribbon') {
+// 		return t('A Ribbon Module.');
+// 	}
+// }
+
+/**
+* Implement hook_init().
+*/
+function ribbon_init() {
+	drupal_add_css(drupal_get_path('module', 'ribbon') . '/ribbon.css', array('group' => CSS_DEFAULT, 'every_page' => TRUE));
+}
+
+/**
+* Implement hook_theme().
+*/
+function ribbon_theme() {
+  return array(
+    'ribbon_template' => array(
+      'template' => 'ribbon' ,
+      'arguments' => array(
+        'ribbon_caption' => NULL ,
+        'ribbon_color' => NULL ,
+        'ribbon_transparence_color' => NULL ,
+        'ribbon_font_color' => NULL ,
+        'ribbon_hidden' => NULL
+        ) ,
+    )
+  );
+}
+
+/** 
+* Implement hook_page_build().
+*/
+function ribbon_page_build( &$page ) {
+
+    $ribbon_caption = variable_get('ribbon_caption_text', 'Ribbon') ;
+    $ribbon_color   = variable_get('ribbon_color_text', 'rgba(234, 240, 105, 0.78)') ;
+    $ribbon_transparence_color = variable_get('ribbon_transparence_color_text', '0.75') ;
+    $ribbon_font_color   = variable_get('ribbon_font_color_text', 'black') ;
+    $ribbon_hidden  = variable_get('ribbon_hidden_button', TRUE) ;
+    $page['page_top']['ribbon'] = array(
+      '#markup' => theme('ribbon_template', array( 
+        'ribbon_caption' => $ribbon_caption ,
+        'ribbon_color'   => hex2rgb('#' . $ribbon_color , $ribbon_transparence_color ) ,
+        'ribbon_font_color'   => '#' . $ribbon_font_color ,
+        'ribbon_hidden'  => $ribbon_hidden ,
+        'ribbon_hidden_icon'  => file_create_url( drupal_get_path('module', 'ribbon') ) . '/close.png' ,
+        )
+      ) ,
+    );
+}
+
+/**
+* Implement hook_menu().
+*/
+function ribbon_menu() {
+  
+    $items = array();
+    
+    $items['admin/structure/ribbon'] = array(
+        'title'            => 'Ribbon',
+        'description'      => 'Configuration for the Top Ribbon.',
+        'page callback'    => 'drupal_get_form',
+        'page arguments'   => array('ribbon_form'),
+        'access arguments' => array('administer users'),
+        'type'             => MENU_NORMAL_ITEM,
+      );
+ 
+    return $items;
+}
+
+/**
+* Form builder
+*/
+function ribbon_form($form, &$form_state) {
+  
+    $form['ribbon_caption_text'] = array(
+      '#type' => 'textfield',
+      '#default_value' => variable_get('ribbon_caption_text', 'Ribbon'),
+      '#title' => t('Text'),
+      '#description' => t('The Text in the Ribbon'),
+      '#size' => '100',
+      '#maxlength' => 120,
+      '#required' => TRUE,
+    );
+
+    $form['ribbon_color_text'] = array(
+      '#type' => 'jquery_colorpicker',
+      '#default_value' => variable_get('ribbon_color_text', 'dce800'),
+      '#title' => t('Color'),
+      '#description' => t('The Color of the Ribbon'),
+      '#size' => '25',
+      '#maxlength' => 120,
+      '#required' => TRUE,
+    );
+
+    $form['ribbon_transparence_color_text'] = array(
+      '#type' => 'textfield',
+      '#default_value' => variable_get('ribbon_transparence_color_text', '0.75'),
+      '#title' => t('Transparence Level'),
+      '#description' => t('The Transparence Level of the Ribbon (0 ... 1)'),
+      '#size' => '5',
+      '#maxlength' => 5,
+      '#required' => TRUE,
+    );
+
+    $form['ribbon_font_color_text'] = array(
+      '#type' => 'jquery_colorpicker',
+      '#default_value' => variable_get('ribbon_font_color_text', '000000'),
+      '#title' => t('Font Color'),
+      '#description' => t('The Color of the Font'),
+      '#size' => '25',
+      '#maxlength' => 120,
+      '#required' => TRUE,
+    );
+
+    $form['ribbon_hidden_button'] = array(
+      '#type' => 'checkbox',
+      '#default_value' => variable_get('ribbon_hidden_button', TRUE),
+      '#title' => t('Show "Close" Button'),
+      '#description' => t(""),
+    );
+     
+    return system_settings_form($form);
+}
+
+/**
+* Save configuration settings for Ribbon module.
+*/
+function ribbon_form_submit($form, &$form_state) { 
+  variable_set('ribbon_caption_text',$form_state['values']['ribbon_caption_text']);
+  variable_set('ribbon_color_text',$form_state['values']['ribbon_color_text']);
+  variable_set('ribbon_transparence_color_text',$form_state['values']['ribbon_transparence_color_text']);
+  variable_set('ribbon_font_color_text',$form_state['values']['ribbon_font_color_text']);
+  variable_set('ribbon_hidden_button', $form_state['values']['ribbon_hidden_button']);
+  drupal_set_message(t('The settings have been saved'));
+}
+
+function hex2rgb($hex,$transparence = 0.75 ){
+  list($r, $g, $b) = sscanf($hex, "#%02x%02x%02x");
+  return "rgba($r, $g, $b, $transparence)";
+}
+
+?>
