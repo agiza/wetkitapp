@@ -1,0 +1,18 @@
+<?php
+
+/**
+ * Implements hook_preprocess_HOOK() for html.tpl.php
+ */
+function tab_toolbar_preprocess_html(&$variables) {
+  global $theme;
+
+  $tabs = menu_local_tabs();
+
+  if (!empty($tabs['#primary'])) {
+    drupal_add_css(drupal_get_path('module', 'tab_toolbar') . '/tab_toolbar.css');
+    $variables['classes_array'][] = 'tab-toolbar';
+  }
+  if (!empty($tabs['#secondary'])) {
+    $variables['classes_array'][] = 'tab-toolbar-secondary';
+  }  
+}

@@ -1,0 +1,12 @@
+name = Tabs in Toolbar
+description = Moves the tabs into their own toolbar
+package = Other
+core = 7.x
+dependencies[] = menu
+
+; Information added by Drupal.org packaging script on 2013-12-30
+version = "7.x-1.0-beta3"
+core = "7.x"
+project = "tab_toolbar"
+datestamp = "1388438006"
+
